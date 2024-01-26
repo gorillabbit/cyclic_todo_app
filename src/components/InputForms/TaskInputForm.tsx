@@ -1,4 +1,4 @@
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Alert} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import DatePicker from 'react-native-date-picker';
 import React, {useState} from 'react';
@@ -21,20 +21,15 @@ const defaultNewTask: TaskType = {
 };
 
 const styles = StyleSheet.create({
-  周期単位Input: {
-    maxWidth: 10,
-  },
-
-  flexGrow: {
-    flexGrow: 1,
-  },
+  flexGrow: {flexGrow: 1},
+  buttonsStyle: {flexDirection: 'row', justifyContent: 'center'},
 });
 
 const TaskInputForm = () => {
   const [newTask, setNewTask] = useState<TaskType>(defaultNewTask);
   const handleNewTaskInput = (name: string, value) => {
     if (name === '周期日数' && parseInt(value, 10) <= 0) {
-      alert('0以下は入力できません。');
+      Alert.alert('0以下は入力できません。');
       return;
     }
     setNewTask(prev => ({...prev, [name]: value}));
@@ -79,7 +74,7 @@ const TaskInputForm = () => {
           onChangeText={value => handleNewTaskInput('text', value)}
           placeholder="タスクを入力"
         />
-        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <View style={styles.buttonsStyle}>
           <Button
             title={'期日 ' + format(newTask.期日, 'yyyy年MM月dd日')}
             onPress={() => setIsOpen期日(prev => !prev)}

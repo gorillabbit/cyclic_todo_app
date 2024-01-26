@@ -1,5 +1,5 @@
 //import "../App.css";
-import {View, Switch, Text, Button} from 'react-native';
+import {View, Switch, Text, Button, Alert} from 'react-native';
 import {Input} from '@rneui/base';
 import React, {useState} from 'react';
 import {addDocLog} from '../../firebase';
@@ -18,8 +18,7 @@ const LogInputForm = ({}) => {
 
   const handleNewLogInput = (name: string, value) => {
     if (name === 'intervalNum' && parseInt(value, 10) <= 0) {
-      // eslint-disable-next-line no-alert
-      alert('0以下は入力できません。');
+      Alert.alert('0以下は入力できません。');
       return;
     }
     setNewLog(prev => ({...prev, [name]: value}));

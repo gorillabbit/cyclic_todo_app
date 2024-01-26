@@ -49,7 +49,9 @@ const Log = ({log, logsCompleteLogs}) => {
   const completeLogs = logsCompleteLogs.filter(
     (logsCompleteLog: LogsCompleteLogsType) => logsCompleteLog.logId === log.id,
   );
-  const finishLogs = completeLogs.filter(log => log.type === 'finish');
+  const finishLogs = completeLogs.filter(
+    (completeLog: {type: string}) => completeLog.type === 'finish',
+  );
   const lastCompletedLog = finishLogs[0];
   const isStarted = completeLogs[0]?.type === 'start';
   const isLastCompletedAvailable =
@@ -72,8 +74,8 @@ const Log = ({log, logsCompleteLogs}) => {
   //これまでの完了回数
   const completedCounts = finishLogs.length;
   const todayCompletedCounts = finishLogs.filter(
-    (log: {timestamp: {toDate: () => any}}) =>
-      differenceInDays(new Date(), log.timestamp?.toDate()) < 1,
+    (finisLog: {timestamp: {toDate: () => any}}) =>
+      differenceInDays(new Date(), finisLog.timestamp?.toDate()) < 1,
   );
   return (
     <ListItem

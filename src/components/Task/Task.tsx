@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-//import "../App.css";
-import {addDocTask, deleteDocTask, updateDocTask} from '../firebase.js';
-import {calculateNext期日} from '../utilities/dateUtilites.js';
-import {getBackgroundColor} from '../utilities/taskUtilites.js';
+import {addDocTask, deleteDocTask, updateDocTask} from '../../firebase.js';
+import {calculateNext期日} from '../../utilities/dateUtilites.js';
+import {getBackgroundColor} from '../../utilities/taskUtilites.js';
 
 import {serverTimestamp} from 'firebase/firestore';
 import TaskDetail from './TaskDetail.js';
-import {Task as TaskType} from '../types.js';
+import {Task as TaskType} from '../../types.js';
 import {Button, ListItem} from '@rneui/themed';
 
 interface TaskProps {

@@ -1,16 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View} from 'react-native';
-import {deleteDocLog, addDocLogsCompleteLogs} from '../firebase';
+import {View, StyleSheet} from 'react-native';
+import {deleteDocLog, addDocLogsCompleteLogs} from '../../firebase';
 import {
   Log as LogType,
   LogsCompleteLogs as LogsCompleteLogsType,
-} from '../types';
+} from '../../types';
 import {format, differenceInDays} from 'date-fns';
-import {checkLastLogCompleted} from '../utilities/dateUtilites';
+import {checkLastLogCompleted} from '../../utilities/dateUtilites';
 import Stopwatch from './Stopwatch';
 import {Button, ListItem} from '@rneui/themed';
+import {Chip} from '@rneui/base';
+import CompleteLog from './CompleteLog';
 
-const logStyle = {borderWidth: 0.5, borderRadius: 4, marginTop: 5};
+const logStyle = {borderWidth: 0.5, borderRadius: 4, marginTop: 5, padding: 10};
+const Styles = StyleSheet.create({
+  chips: {gap: 1, flexDirection: 'row', flexWrap: 'wrap', marginTop: 2},
+});
 
 const logComplete = (log: LogType, event) => {
   event.stopPropagation();
@@ -33,16 +38,6 @@ const logStart = (log: LogType, event) => {
 const deleteLog = (id, event) => {
   event.stopPropagation();
   deleteDocLog(id);
-};
-
-const CompleteLog = ({completeLog}) => {
-  return completeLog.timestamp ? (
-    <View key={completeLog.id}>
-      <Text>{format(completeLog.timestamp.toDate(), 'yyyy-MM-dd HH:mm')}</Text>
-    </View>
-  ) : (
-    <View />
-  );
 };
 
 const Log = ({log, logsCompleteLogs}) => {
@@ -91,37 +86,33 @@ const Log = ({log, logsCompleteLogs}) => {
             <Stopwatch />
           </ListItem.Subtitle>
         )}
-        <ListItem.Subtitle>
-          {isLastCompletedAvailable || lastCompletedLog
-            ? '前回から ' + intervalFromLastCompleted
-            : ''}
-        </ListItem.Subtitle>
-        <ListItem.Subtitle>
-          {'今日の回数 ' + todayCompletedCounts.length}
-        </ListItem.Subtitle>
-        <ListItem.Subtitle>
-          {'通算完了回数 ' + completedCounts}
-        </ListItem.Subtitle>
-        {isOpen &&
-          completeLogs.map((completeLog: LogsCompleteLogsType) => (
-            <CompleteLog completeLog={completeLog} />
-          ))}
+        <View style={Styles.chips}>
+          {isLastCompletedAvailable && (
+            <Chip title={'前回から ' + intervalFromLastCompleted} />
+          )}
+          <Chip title={'今日の回数 ' + todayCompletedCounts.length} />
+          <Chip title={'通算完了回数 ' + completedCounts} />
+          {isOpen &&
+            completeLogs.map((completeLog: LogsCompleteLogsType) => (
+              <CompleteLog completeLog={completeLog} />
+            ))}
+        </View>
       </ListItem.Content>
       <View>
-        {log.interval && (
+        {log.duration && !isStarted && (
           <Button
             color={'#3f71dd'}
             onPress={e => logStart(log, e)}
-            disabled={isStarted}
             title={'開始'}
           />
         )}
-        <Button
-          color={'#4caf50'}
-          onPress={e => logComplete(log, e)}
-          disabled={log.interval ? !isStarted : false}
-          title={'完了'}
-        />
+        {(!log.duration || isStarted) && (
+          <Button
+            color={'#4caf50'}
+            onPress={e => logComplete(log, e)}
+            title={'完了'}
+          />
+        )}
         <Button
           color={'#f44336'}
           onPress={e => deleteLog(log.id, e)}
